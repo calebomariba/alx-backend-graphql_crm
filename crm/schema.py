@@ -410,3 +410,37 @@ class Mutation(graphene.ObjectType):
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+    update_low_stock_products = UpdateLowStockProducts.Field()
+
+
+# Define Product type for GraphQL
+class ProductType(DjangoObjectType):
+    class Meta:
+        model = Product
+        fields = ("id", "name", "stock")
+
+# Define the mutation
+class UpdateLowStockProducts(graphene.Mutation):
+    class Arguments:
+        pass  # No input arguments needed
+
+    success_message = graphene.String()
+    updated_products = graphene.List(ProductType)
+
+    def mutate(self, info):
+        # Query products with stock < 10
+        low_stock_products = Product.objects.filter(stock__lt=10)
+        
+        # Update stock by incrementing by 10
+        updated_products = []
+        for product in low_stock_products:
+            product.stock += 10
+            product.save()
+            updated_products.append(product)
+        
+        # Return success message and updated products
+        success_message = f"Updated {len(updated_products)} products successfully"
+        return UpdateLowStockProducts(
+            success_message=success_message,
+            updated_products=updated_products
+        )

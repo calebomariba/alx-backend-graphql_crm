@@ -139,3 +139,18 @@ def updatelowstock():
         except Exception as log_error:
             print(f"Failed to write error log: {log_error}")
             print(error_message)
+
+
+def update_low_stock():
+    # Get current timestamp
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Execute the GraphQL mutation
+    loop = asyncio.get_event_loop()
+    result = loop.run_until_complete(execute_low_stock_mutation())
+    
+    # Log the results
+    with open("/tmp/low_stock_updates_log.txt", "a") as log_file:
+        log_file.write(f"[{timestamp}] {result['successMessage']}\n")
+        for product in result["updatedProducts"]:
+            log_file.write(f"[{timestamp}] Updated Product: {product['name']}, New Stock: {product['stock']}\n")
