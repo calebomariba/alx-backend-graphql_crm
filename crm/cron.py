@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Setup Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'graphql_crm.settings')
-django.setup()
+# django.setup()
 
 
 def log_crm_heartbeat():
