@@ -412,13 +412,6 @@ class Mutation(graphene.ObjectType):
     create_order = CreateOrder.Field()
     update_low_stock_products = UpdateLowStockProducts.Field()
 
-
-# Define Product type for GraphQL
-class ProductType(DjangoObjectType):
-    class Meta:
-        model = Product
-        fields = ("id", "name", "stock")
-
 # Define the mutation
 class UpdateLowStockProducts(graphene.Mutation):
     class Arguments:
@@ -444,3 +437,14 @@ class UpdateLowStockProducts(graphene.Mutation):
             success_message=success_message,
             updated_products=updated_products
         )
+
+# Update Query and Mutation classes
+class Query(graphene.ObjectType):
+    # Existing queries (e.g., hello, orders, etc.)
+    pass
+
+class Mutation(graphene.ObjectType):
+    update_low_stock_products = UpdateLowStockProducts.Field()
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
+
